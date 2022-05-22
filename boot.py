@@ -12,8 +12,8 @@ esp.osdebug(None)
 import gc
 gc.collect()
 
-ssid = ''
-password = ''
+ssid = 'UPC65D7E27'
+password = 'mtsvecK4fe7a'
 
 station = network.WLAN(network.STA_IF)
 
