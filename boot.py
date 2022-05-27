@@ -4,6 +4,7 @@ except:
   import socket
 
 from machine import Pin
+from neopixel import NeoPixel
 import network
 
 import esp
@@ -26,4 +27,5 @@ while station.isconnected() == False:
 print('Connection successful')
 print(station.ifconfig())
 
-led_0 = Pin(2, Pin.OUT)
+# led_0 = Pin(2, Pin.OUT)
+neopixel_strip = NeoPixel(Pin(26), 10)

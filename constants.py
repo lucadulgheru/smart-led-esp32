@@ -6,6 +6,7 @@ LED_ID = "/<led_id>"
 LED_ACTION_ON = "/on"
 LED_ACTION_OFF = "/off"
 LED_ACTION_TOGGLE = "/toggle"
+LED_ACTION_COLOR = "/color"
 
 # LED status
 LED_STATUS_ON = "ON"

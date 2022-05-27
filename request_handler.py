@@ -6,7 +6,6 @@ def handle_request(connection, address, led_list):
     response_object = parse_request(connection, address, led_list)
     send_response(connection, response_object)
 
-# We need to search for the "endpoint" which is being called
 def parse_request(connection, address, led_list):
     request = str(connection.recv(1024))
     if PING_ENDPOINT_BASE_PATH in request:
@@ -18,6 +17,13 @@ def parse_request(connection, address, led_list):
         selected_led = next(led for led in led_list if led.led_id == led_id)
         selected_led.toggle()
         log_event_address(EVENT_LED_TOGGLE, address[0])
+        return build_led_toggle_response(selected_led.led_id, selected_led.led_status, selected_led.led_color)
+    elif LED_ENDPOINT_BASE_PATH + LED_ACTION_COLOR in request:
+        led_id = extract_led_id_from_color_change_request(request)
+        selected_led = next(led for led in led_list if led.led_id == led_id)
+        color = parse_color_from_request(request)
+        selected_led.change_color(color)
+        log_event_address(EVENT_LED_COLOR_SWITCH, address[0])
         return build_led_toggle_response(selected_led.led_id, selected_led.led_status, selected_led.led_color)
     elif EVENTS_ENDPOINT_BASE_PATH in request:
         return build_events_response()
@@ -62,8 +68,22 @@ def build_enumeration_response(led_list):
     
     return json.dumps(response_object)
 
+def extract_led_id_from_color_change_request(request):
+    print(request)
+    print(request[request.find("color") + len("color") + 1: request.find('?')].strip())
+    return int(request[request.find("color") + len("color") + 1: request.find('?')].strip())
+
 def extract_led_id_from_request(request):
     return int(request[request.find("toggle") + len("toggle") + 1: request.find('HTTP')].strip())
+
+def parse_color_from_request(request):
+    hex_code = request[request.find("color_code") + len("color_code="):]
+    print(hex_code)
+    r = int(hex_code[:2], 16)
+    g = int(hex_code[2:4], 16)
+    b = int(hex_code[4:6], 16)
+    
+    return (r, g, b)
 
 def parse_log(log):
     log_tokens = log.split("-")
