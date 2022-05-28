@@ -9,6 +9,7 @@ def handle_request(connection, address, led_list):
 def parse_request(connection, address, led_list):
     request = str(connection.recv(1024))
     if PING_ENDPOINT_BASE_PATH in request:
+        log_event_address(EVENT_PING_BOARD, address[0])
         return build_ping_response()
     elif ENUMERATION_ENDPOINT_BASE_PATH in request:
         return build_enumeration_response(led_list)
@@ -69,8 +70,6 @@ def build_enumeration_response(led_list):
     return json.dumps(response_object)
 
 def extract_led_id_from_color_change_request(request):
-    print(request)
-    print(request[request.find("color") + len("color") + 1: request.find('?')].strip())
     return int(request[request.find("color") + len("color") + 1: request.find('?')].strip())
 
 def extract_led_id_from_request(request):
@@ -78,7 +77,6 @@ def extract_led_id_from_request(request):
 
 def parse_color_from_request(request):
     hex_code = request[request.find("color_code") + len("color_code="):]
-    print(hex_code)
     r = int(hex_code[:2], 16)
     g = int(hex_code[2:4], 16)
     b = int(hex_code[4:6], 16)
@@ -93,7 +91,7 @@ def parse_log(log):
         "event_type": log_tokens[2].lstrip().rstrip()
     }
 
-def log_event_address(msg, address):
-    log_info(address + " - " + EVENT_LED_TOGGLE)
-def log_event(msg):
-    log_info(msg)
+def log_event_address(event, address):
+    log_info(address + " - " + event)
+def log_event(event):
+    log_info(event)

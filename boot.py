@@ -27,5 +27,4 @@ while station.isconnected() == False:
 print('Connection successful')
 print(station.ifconfig())
 
-# led_0 = Pin(2, Pin.OUT)
 neopixel_strip = NeoPixel(Pin(26), 10)
